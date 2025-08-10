@@ -16,7 +16,7 @@ const isAuthenticated = (req, res, next) => {
                 success: false 
             });   
         }
-        req.id = decoded.userId; // Assuming the token contains userId
+        req.userId = decoded.userId; // Assuming the token contains userId
         next();
     } catch (error) {
         console.error('Authentication error:', error);

@@ -22,10 +22,10 @@ router.get("/logout", logout);
 // Get user profile route
 router.get("/:id/profile",isAuthenticated, getUserProfile);
 // Update user profile route
-router.put("/profile/edit", isAuthenticated,upload.single('profilePicture'),updateUserProfile);
+router.post("/profile/edit", isAuthenticated, upload.single('profilePicture'), updateUserProfile);
 // Get suggested users route
-router.get("/suggested-users", getSuggestedUsers);
+router.get("/suggested-users",isAuthenticated, getSuggestedUsers);
 // Follow or unfollow user route
-router.put("/follow-unfollow/:userId", followOrUnfollowUser);
+router.post("/follow-unfollow/:id",isAuthenticated , followOrUnfollowUser);
 
 export default router;

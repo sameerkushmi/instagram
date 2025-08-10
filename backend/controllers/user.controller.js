@@ -31,7 +31,8 @@ export const register = async (req, res) => {
             password: hashedPassword,
         };
         // Save the user to the database
-        await newUser.save();
+        const createdUser = new User(newUser);
+        await createdUser.save();
         // Respond with success message
         return res.status(201).json({ message: 'User registered successfully', user: { username } });
     } catch (error) {
@@ -73,7 +74,7 @@ export const login = async (req, res) => {
             { expiresIn: '1h' }
         );
         // Prepare user data to send back
-        user = {
+        const users = {
             _id : user._id,
             username: user.username,
             email: user.email,
@@ -91,7 +92,7 @@ export const login = async (req, res) => {
         }).json({ 
             message: 'Login successful', 
             success: true,
-            user
+            users
         });
     } catch (error) {
         console.error('Login error:', error);
@@ -114,7 +115,7 @@ export const logout = async (req, res) => {
 export const getUserProfile = async (req, res) => {
     try {
         // Get user ID from request parameters
-        const { userId } = req.params;
+        const userId  = req.userId;
         if (!userId) {
             return res.status(400).json({ 
                 message: 'User ID is required',
@@ -123,7 +124,7 @@ export const getUserProfile = async (req, res) => {
         }
 
         // Find user by ID
-        const user = await User.findById(userId);
+        const user = await User.findById(userId).select('-password'); // Exclude password from response
         if (!user) {
             return res.status(404).json({ 
                 message: 'User not found',
@@ -131,22 +132,10 @@ export const getUserProfile = async (req, res) => {
             });
         }
 
-        // Prepare user data to send back
-        const userData = {
-            _id: user._id,
-            username: user.username,
-            email: user.email,
-            profilePicture: user.profilePicture,
-            bio: user.bio,
-            followers: user.followers,
-            following: user.following,
-            posts: user.posts,
-        };
-
         return res.status(200).json({ 
             message: 'User profile retrieved successfully', 
             success: true, 
-            user: userData 
+            user
         });
     } catch (error) {
         console.error('Get User Profile error:', error);
@@ -157,7 +146,7 @@ export const getUserProfile = async (req, res) => {
 export const updateUserProfile = async (req, res) => {
     try {
         // Get user ID from request parameters
-        const userId = req.id;
+        const userId = req.userId;
         const {bio,gender} = req.body;
         const profilePicture = req.file;
         let cloudResponse 
@@ -204,7 +193,7 @@ export const updateUserProfile = async (req, res) => {
 export const getSuggestedUsers = async (req, res) => {
     try {
         // Get user ID from request parameters
-        const userId = req.id;
+        const userId = req.userId;
         if (!userId) {
             return res.status(400).json({ 
                 message: 'User ID is required',
@@ -247,8 +236,9 @@ export const getSuggestedUsers = async (req, res) => {
 export const followOrUnfollowUser = async (req, res) => {
     try {
         // Get user ID from request parameters
-        const userId = req.id;
+        const userId = req.userId;
         const targetUserId  = req.params.id;
+        console.log(targetUserId)
 
         if (!userId || !targetUserId) {
             return res.status(400).json({ 
@@ -281,8 +271,8 @@ export const followOrUnfollowUser = async (req, res) => {
         if (isFollowing) {
             // Unfollow the target user
             await Promise.all([
-                user.updateOne({ _id: userId }, { $pull: { following: targetUserId } }),
-                targetUser.updateOne({ _id: targetUserId }, { $pull: { followers: userId } })
+                User.updateOne({ _id: userId }, { $pull: { following: targetUserId } }),
+                User.updateOne({ _id: targetUserId }, { $pull: { followers: userId } })
             ]);
             return res.status(200).json({ 
                 message: 'Unfollowed successfully', 
@@ -291,9 +281,10 @@ export const followOrUnfollowUser = async (req, res) => {
         } else {
             // Follow the target user
             await Promise.all([
-                user.updateOne({ _id: userId},{$push: { following: targetUserId } }),
-                targetUser.updateOne({ _id: targetUserId }, { $push: { followers: userId } })
+                User.updateOne({ _id: userId }, { $push: { following: targetUserId } }),
+                User.updateOne({ _id: targetUserId }, { $push: { followers: userId } })
             ]);
+            
             return res.status(200).json({ 
                 message: 'Followed successfully', 
                 success: true 
