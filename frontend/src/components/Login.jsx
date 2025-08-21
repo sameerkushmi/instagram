@@ -1,16 +1,15 @@
 import { useState } from "react"
 import axios from "axios"
-import { Link, useNavigate } from "react-router-dom"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
 import { Label } from "./ui/label"
 import { toast } from "sonner"
+import { Link, useNavigate } from "react-router-dom"
 import { FaSpinner } from "react-icons/fa"
 
 
-const SignUp = () => {
+const Login = () => {
   const [input,setInput] = useState({
-    username: "",
     email: "",
     password: ""
   })
@@ -30,17 +29,16 @@ const SignUp = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const response = await axios.post("http://localhost:8080/api/v1/user/register", input, {
+      const response = await axios.post("http://localhost:8080/api/v1/user/login", input, {
         headers: {
           "Content-Type": "application/json"
         },
         withCredentials: true
       }); 
       if(response.data.success) {
-        navigate("/login");
+        navigate("/");
         toast.success(response.data.message);
         setInput({
-          username: "",
           email: "",
           password: ""
         });
@@ -62,17 +60,7 @@ const SignUp = () => {
       <form onSubmit={singupHandler} className="shadow-lg bg-zinc-100 flex flex-col gap-5 p-8 rounded-md">
         <div>
           <h1 className="text-center font-bold text-xl">LOGO</h1>
-          <p className="text-sm text-center">Singup to see photos & videos from your friends</p>
-        </div>
-        <div>
-          <Label className="font-medium">Username</Label>
-          <Input
-            type="text"
-            name="username"
-            value={input.username}
-            onChange={changeEventHandler}
-            className="w-full focus:ring-transparent bg-white my-2"
-          />
+          <p className="text-sm text-center">Login to see photos & videos from your friends</p>
         </div>
         <div> 
           <Label className="font-medium">Email</Label>
@@ -98,12 +86,12 @@ const SignUp = () => {
             loading ?
             <Button><FaSpinner className="animate-spin" />Please wait</Button>
             :
-            <Button> Signup</Button>
+            <Button>Login</Button>
         }
-        <span>Already have an account?  <Link to="/login" className="text-blue-600">Login</Link></span>
+            <span>Dose not have an account?  <Link to="/signup" className="text-blue-600">Signup</Link></span>
       </form>
     </div>
   )
 }
 
-export default SignUp
+export default Login
