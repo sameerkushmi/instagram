@@ -6,6 +6,8 @@ import { Label } from "./ui/label"
 import { toast } from "sonner"
 import { Link, useNavigate } from "react-router-dom"
 import { FaSpinner } from "react-icons/fa"
+import { useDispatch } from "react-redux"
+import { setAuthUser } from "./redux/authSlice"
 
 
 const Login = () => {
@@ -16,6 +18,7 @@ const Login = () => {
 
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const changeEventHandler = (e) => {
     const { name, value } = e.target;
@@ -36,6 +39,7 @@ const Login = () => {
         withCredentials: true
       }); 
       if(response.data.success) {
+        dispatch(setAuthUser(response.data.users));
         navigate("/");
         toast.success(response.data.message);
         setInput({
