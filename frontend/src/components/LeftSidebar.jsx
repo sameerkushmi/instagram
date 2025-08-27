@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "./redux/authSlice";
 import { useState } from "react";
 import CreatePost from "./CreatePost";
+import { setPosts } from "./redux/postSlice";
 
 const LeftSidebar = () => {
 
@@ -28,6 +29,7 @@ const LeftSidebar = () => {
             });
             if (response.data.success) {
                 dispatch(setAuthUser(null));
+                dispatch(setPosts([]));
                 toast.success(response.data.message);
                 // additional actions like redirecting to login page can be done here
                 navigate('/login');

@@ -10,7 +10,6 @@ const userGetAllPost = () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/v1/post/all', { withCredentials: true })
                 if (response.data.success) {
-                    console.log(response)
                     dispatch(setPosts(response.data.posts))
                 }
             } catch (error) {

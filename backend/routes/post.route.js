@@ -29,7 +29,7 @@ router.post('/:id/comment', isAuthenticated, addComment);
 // Route to get comments of a post
 router.post('/:id/comment/all', isAuthenticated, getCommentsOfPost);
 // Route to delete a post by ID
-router.post('/delete/:id', isAuthenticated, deletePost);
+router.delete('/delete/:id', isAuthenticated, deletePost);
 // Route to bookmark a post
 router.post('/:id/bookmark', isAuthenticated, bookmarkPost);
 
