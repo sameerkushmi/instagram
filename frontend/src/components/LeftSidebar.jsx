@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "./redux/authSlice";
 import { useState } from "react";
 import CreatePost from "./CreatePost";
-import { setPosts } from "./redux/postSlice";
+import { setPosts, setSelectedPost } from "./redux/postSlice";
 
 const LeftSidebar = () => {
 
@@ -30,6 +30,7 @@ const LeftSidebar = () => {
             if (response.data.success) {
                 dispatch(setAuthUser(null));
                 dispatch(setPosts([]));
+                dispatch(setSelectedPost(null));
                 toast.success(response.data.message);
                 // additional actions like redirecting to login page can be done here
                 navigate('/login');
@@ -44,6 +45,8 @@ const LeftSidebar = () => {
     const sidebarHandler = (textType) => {
         if (textType === 'Logout') logoutHandler();
         if(textType === 'Create') setOpen(true);
+        if(textType === 'Profile') navigate(`/profile/${user?._id}`);
+        if(textType === 'Home') navigate('/')
     }
 
     const sidebarItems = [
@@ -89,7 +92,7 @@ const LeftSidebar = () => {
     return (
         <div className="fixed left-0 top-0 z-10 px-4 border-r border-gray-300 w-[16%] h-screen">
             <div className='flex flex-col'>
-                <h1 className="my-8 pl-3 font-bold text-xl">LOGO</h1>
+                <h1 className="my-8 pl-3 font-bold text-xl uppercase">Instagram</h1>
                 <div>
                     {
                         sidebarItems.map((item, index) => (

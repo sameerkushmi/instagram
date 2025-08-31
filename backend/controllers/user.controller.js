@@ -127,7 +127,7 @@ export const logout = async (req, res) => {
 export const getUserProfile = async (req, res) => {
     try {
         // Get user ID from request parameters
-        const userId  = req.userId;
+        const userId  = req.params.id;
         if (!userId) {
             return res.status(400).json({ 
                 message: 'User ID is required',
@@ -136,7 +136,10 @@ export const getUserProfile = async (req, res) => {
         }
 
         // Find user by ID
-        const user = await User.findById(userId).select('-password'); // Exclude password from response
+        const user = await User.findById(userId)
+        .populate({path: 'posts',createdAt:-1})
+        .populate('bookmarks')
+
         if (!user) {
             return res.status(404).json({ 
                 message: 'User not found',
@@ -186,7 +189,7 @@ export const updateUserProfile = async (req, res) => {
 
         // Update user fields
         if (bio) user.bio = bio;
-        if (bio) user.gender = gender;
+        if (gender) user.gender = gender;
         if (profilePicture) user.profilePicture = cloudResponse.secure_url;
 
         // Save updated user to the database
@@ -304,6 +307,51 @@ export const followOrUnfollowUser = async (req, res) => {
         }
     } catch (error) {
         console.error('Follow/Unfollow User error:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+export const refreshToken = async(req,res) => {
+    try {
+        const user = await User.findById(req.userId)
+        if(!user) {
+            return res.status(404).json({
+                message: 'User not Found',
+                success: false
+            })
+        }
+
+         // Generate JWT token
+        const token = jwt.sign(
+            { userId: user._id },
+            process.env.SECRET_KEY,
+            { expiresIn: '1d' }
+        );
+
+        const users = {
+            _id : user._id,
+            username: user.username,
+            email: user.email,
+            profilePicture: user.profilePicture,
+            bio: user.bio,  
+            followers: user.followers,
+            following: user.following,  
+            posts: populatePosts
+        }
+
+        res.clearCookie('token')
+        
+        res.cookie('token', token, {
+            httpOnly: true,
+            sameSite: 'Strict', // CSRF protection  
+            maxAge: 3600000 * 12 // 1 hour
+        }).json({ 
+            message: 'Login successful', 
+            success: true,
+            users
+        });
+
+    } catch (error) {
         return res.status(500).json({ message: 'Internal server error' });
     }
 }

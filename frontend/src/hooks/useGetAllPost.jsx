@@ -1,9 +1,9 @@
 import { setPosts } from '@/components/redux/postSlice'
 import axios from 'axios'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 
-const userGetAllPost = () => {
+const useGetAllPost = () => {
     const dispatch = useDispatch()
     useEffect(() => {
         const fetchPosts = async () => {
@@ -20,4 +20,4 @@ const userGetAllPost = () => {
     }, [])
 }
 
-export default userGetAllPost
+export default useGetAllPost

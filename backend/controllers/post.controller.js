@@ -193,10 +193,10 @@ export const dislikePost = async (req, res) => {
 export const addComment = async (req, res) => {
     try {
         const postId = req.params.id;
-        const { comment } = req.body;
+        const { text } = req.body;
         const userId = req.userId;
 
-        if (!comment) {
+        if (!text) {
             return res.status(400).json({ 
                 message: 'Comment cannot be empty', 
                 success: false 
@@ -212,10 +212,12 @@ export const addComment = async (req, res) => {
         }
 
         const newComment = await Comment.create({
-            content: comment,
+            text,
             author: userId,
             post: postId
-        }).popuplate({ path: 'author', select: 'username profilePicture' });
+        })
+        await newComment.populate('author', 'username profilePicture');
+
 
         post.comments.push(newComment._id);
         await post.save();
