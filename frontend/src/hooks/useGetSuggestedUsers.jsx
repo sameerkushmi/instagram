@@ -1,6 +1,6 @@
-import { setSuggestedUsers } from '@/components/redux/authSlice'
-import axios from 'axios'
 import { useEffect } from 'react'
+import axios from 'axios'
+import { setSuggestedUsers } from '@/components/redux/authSlice'
 import { useDispatch } from 'react-redux'
 
 const useGetSuggestedUsers = () => {

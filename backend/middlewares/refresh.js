@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken'
 
 const refresh = async (req,res,next) => {
     const { token } = req.cookies
+    
     if (!token) {
         res.clearCookie('token', {
             httpOnly: true,
@@ -16,7 +17,7 @@ const refresh = async (req,res,next) => {
 
     try {
         const user = jwt.verify(token, process.env.SECRET_KEY)
-        req.userId = user._id
+        req.userId = user.userId
         next()
     } catch (error) {
         console.log(error)

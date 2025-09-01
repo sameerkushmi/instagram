@@ -314,6 +314,7 @@ export const followOrUnfollowUser = async (req, res) => {
 export const refreshToken = async(req,res) => {
     try {
         const user = await User.findById(req.userId)
+        console.log(user)
         if(!user) {
             return res.status(404).json({
                 message: 'User not Found',
@@ -339,12 +340,10 @@ export const refreshToken = async(req,res) => {
             posts: populatePosts
         }
 
-        res.clearCookie('token')
-        
-        res.cookie('token', token, {
+        return res.cookie('token', token, {
             httpOnly: true,
             sameSite: 'Strict', // CSRF protection  
-            maxAge: 3600000 * 12 // 1 hour
+            maxAge: 3600000 * 12
         }).json({ 
             message: 'Login successful', 
             success: true,

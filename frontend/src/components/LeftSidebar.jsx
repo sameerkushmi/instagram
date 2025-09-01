@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { setAuthUser } from "./redux/authSlice";
+import { setAuthUser, setSelectedUser } from "./redux/authSlice";
 import { useState } from "react";
 import CreatePost from "./CreatePost";
 import { setPosts, setSelectedPost } from "./redux/postSlice";
@@ -31,6 +31,7 @@ const LeftSidebar = () => {
                 dispatch(setAuthUser(null));
                 dispatch(setPosts([]));
                 dispatch(setSelectedPost(null));
+                dispatch(setSelectedUser(null))
                 toast.success(response.data.message);
                 // additional actions like redirecting to login page can be done here
                 navigate('/login');
