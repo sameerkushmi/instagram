@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import axios from "axios"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
@@ -6,7 +6,7 @@ import { Label } from "./ui/label"
 import { toast } from "sonner"
 import { Link, useNavigate } from "react-router-dom"
 import { FaSpinner } from "react-icons/fa"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { setAuthUser } from "./redux/authSlice"
 
 
@@ -17,6 +17,7 @@ const Login = () => {
   })
 
   const [loading, setLoading] = useState(false)
+  const {user} = useSelector(store => store.auth)
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -58,6 +59,12 @@ const Login = () => {
     }
     
   }
+
+  useEffect(()=>{
+    if(user){
+      navigate('/')
+    }
+  },[])
 
   return (
     <div className="flex items-center justify-center h-screen ">

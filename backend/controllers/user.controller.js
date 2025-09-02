@@ -253,7 +253,6 @@ export const followOrUnfollowUser = async (req, res) => {
         // Get user ID from request parameters
         const userId = req.userId;
         const targetUserId  = req.params.id;
-        console.log(targetUserId)
 
         if (!userId || !targetUserId) {
             return res.status(400).json({ 
@@ -311,46 +310,3 @@ export const followOrUnfollowUser = async (req, res) => {
     }
 }
 
-export const refreshToken = async(req,res) => {
-    try {
-        const user = await User.findById(req.userId)
-        console.log(user)
-        if(!user) {
-            return res.status(404).json({
-                message: 'User not Found',
-                success: false
-            })
-        }
-
-         // Generate JWT token
-        const token = jwt.sign(
-            { userId: user._id },
-            process.env.SECRET_KEY,
-            { expiresIn: '1d' }
-        );
-
-        const users = {
-            _id : user._id,
-            username: user.username,
-            email: user.email,
-            profilePicture: user.profilePicture,
-            bio: user.bio,  
-            followers: user.followers,
-            following: user.following,  
-            posts: populatePosts
-        }
-
-        return res.cookie('token', token, {
-            httpOnly: true,
-            sameSite: 'Strict', // CSRF protection  
-            maxAge: 3600000 * 12
-        }).json({ 
-            message: 'Login successful', 
-            success: true,
-            users
-        });
-
-    } catch (error) {
-        return res.status(500).json({ message: 'Internal server error' });
-    }
-}

@@ -85,7 +85,7 @@ const Post = ({ post }) => {
                 withCredentials: true
             });
             if (response.data.success) {
-                const updatedPosts = posts.filter(p => p._id !== post._id);
+                const updatedPosts = posts.filter(p => p?._id !== post?._id);
                 dispatch(setPosts(updatedPosts));
                 toast.success(response.data.message);
                 // Optionally, you might want to remove the post from the UI here
@@ -93,6 +93,20 @@ const Post = ({ post }) => {
         } catch (error) {
             toast.error(error.response?.data?.message);
             console.log(error)
+        }
+    }
+
+    const bookmarkHandler = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/v1/post/${post?._id}/bookmark`, {
+                withCredentials: true
+            })
+            if (response.data.success) {
+                toast.success(response.data.message)
+            }
+        } catch (error) {
+            console.log(error);
+
         }
     }
 
@@ -114,7 +128,10 @@ const Post = ({ post }) => {
                         <IoIosMore className='cursor-pointer' size={20} />
                     </DialogTrigger>
                     <DialogContent className='flex flex-col items-center text-sm text-center'>
-                        <Button variant="ghost" className="cursor-pointer w-fit text-[#ED4956] font-bold" >Unfollow</Button>
+                        {
+                            post?.author?._id !== user?._id &&
+                            <Button variant="ghost" className="cursor-pointer w-fit text-[#ED4956] font-bold" >Unfollow</Button>
+                        }
                         <Button variant="ghost" className="cursor-pointer w-fit font-bold" >Add to favorites</Button>
                         {
                             user && user?._id === post?.author?._id &&
@@ -138,14 +155,14 @@ const Post = ({ post }) => {
                     <FiMessageCircle
                         onClick={() => {
                             dispatch(setSelectedPost(post)),
-                            setOpen(true)
+                                setOpen(true)
                         }}
                         size={`22px`}
                         className='cursor-pointer hover:text-gray-600'
                     />
                     <FiSend size={`22px`} className='cursor-pointer hover:text-gray-600' />
                 </div>
-                <FiBookmark size={`22px`} className='cursor-pointer hover:text-gray-600' />
+                <FiBookmark onClick={bookmarkHandler} size={`22px`} className='cursor-pointer hover:text-gray-600' />
             </div>
             <span className='font-medium block mb-2'>{postLike} likes</span>
             <p>
@@ -157,7 +174,7 @@ const Post = ({ post }) => {
                 <span
                     onClick={() => {
                         dispatch(setSelectedPost(post)),
-                        setOpen(true)
+                            setOpen(true)
                     }}
                     className='cursor-pointer text-sm text-gray-400'>
                     View all {comment.length} comments

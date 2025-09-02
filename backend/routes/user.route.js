@@ -7,10 +7,8 @@ import {
     updateUserProfile,
     getSuggestedUsers ,
     followOrUnfollowUser,
-    refreshToken
 } from "../controllers/user.controller.js";    
 import isAuthenticated from "../middlewares/isAuthenticated.js";
-import refresh from "../middlewares/refresh.js";
 import upload from "../middlewares/multer.js";
 
 const router = express.Router();
@@ -30,6 +28,5 @@ router.get("/suggested",isAuthenticated, getSuggestedUsers);
 // Follow or unfollow user route
 router.post("/follow-unfollow/:id",isAuthenticated , followOrUnfollowUser);
 //refresh user profile
-router.get('/refresh',refresh,refreshToken)
 
 export default router;

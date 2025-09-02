@@ -8,6 +8,7 @@ import postRoute from "./routes/post.route.js";
 import userRoute from "./routes/user.route.js"
 import messageRoute from './routes/message.route.js'
 import { app,server } from "./socket/socket.js"
+import path from 'path'
 
 // Set the port for the application
 const PORT = process.env.PORT || 8000
@@ -18,6 +19,8 @@ app.get("/", (req,res) => {
         success: true
     })
 })
+
+const __dirname = path.resolve()
 
 // middlewares 
 app.use(express.json())
@@ -34,6 +37,8 @@ app.use(cors(corsOption))
 app.use('/api/v1/user', userRoute)
 app.use('/api/v1/post',postRoute)
 app.use('/api/v1/message',messageRoute)
+
+app.use(express.static(path.join(__dirname,"/frontend/dist")))
 
 server.listen(PORT,()=>{
     connectDB()

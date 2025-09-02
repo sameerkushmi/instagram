@@ -5,6 +5,9 @@ import storage from 'redux-persist/lib/storage' // defaults to localStorage for 
 import { combineReducers } from 'redux'
 import authSlice from './authSlice.js'
 import postSlice from './postSlice.js'
+import socketSlice from './socketSlice.js'
+import chatSlice from './chatSlice.js'
+import rtnSlice from './rtnSlice.js'
 
 // persist config
 const persistConfig = {
@@ -16,6 +19,9 @@ const persistConfig = {
 const rootReducer = combineReducers({
   auth: authSlice,
   post:postSlice,
+  socketio:socketSlice,
+  chat: chatSlice,
+  realTimeNotification: rtnSlice
 })
 
 // persist reducer
