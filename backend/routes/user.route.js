@@ -26,7 +26,7 @@ router.post("/profile/edit", isAuthenticated, upload.single('profilePicture'), u
 // Get suggested users route
 router.get("/suggested",isAuthenticated, getSuggestedUsers);
 // Follow or unfollow user route
-router.post("/follow-unfollow/:id",isAuthenticated , followOrUnfollowUser);
+router.get("/follow-unfollow/:id",isAuthenticated , followOrUnfollowUser);
 //refresh user profile
 
 export default router;

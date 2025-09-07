@@ -7,6 +7,8 @@ import { Button } from "./ui/button"
 import { FiAtSign } from "react-icons/fi"
 import { Badge } from "./ui/badge"
 import { BiHeart, BiMessage } from "react-icons/bi"
+import { toast } from "sonner"
+import axios from "axios"
 
 const Profile = () => {
   const params = useParams()
@@ -21,6 +23,20 @@ const Profile = () => {
 
   const handleTabClick = (tab) => {
     setActiveTab(tab)
+  }
+
+   const followOrUnfollowHandler = async() => {
+    try {
+      const {data} = await axios.get(`http://localhost:8080/api/v1/user/follow-unfollow/${userId}`,{
+        withCredentials: true
+      })
+      if(data.success){
+        toast.success(data.message)
+        console.log(data.user)
+      }
+    } catch (error) {
+      toast.error(error.response.data.message)
+    }
   }
 
   const displayedPost = activeTab === 'posts' ? userProfile?.posts : userProfile?.bookmarks
@@ -58,7 +74,7 @@ const Profile = () => {
                           <Button variant="secondary" className='h-8'>Message</Button>
                         </>
                         :
-                        <Button className='bg-[#0095F6] hover:bg-[#0685da] text-white h-8'>Follow</Button>
+                        <Button onClick={followOrUnfollowHandler} className='bg-[#0095F6] hover:bg-[#0685da] text-white h-8'>Follow</Button>
 
                     )
 

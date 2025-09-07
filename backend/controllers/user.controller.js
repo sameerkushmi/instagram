@@ -301,7 +301,7 @@ export const followOrUnfollowUser = async (req, res) => {
             
             return res.status(200).json({ 
                 message: 'Followed successfully', 
-                success: true 
+                success: true,
             });
         }
     } catch (error) {

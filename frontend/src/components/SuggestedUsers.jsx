@@ -1,9 +1,24 @@
 import { useSelector } from "react-redux"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { Link } from "react-router-dom"
+import { toast } from "sonner"
+import axios from "axios"
 
 const SuggestedUsers = () => {
   const { suggestedUsers } = useSelector(state => state.auth)
+
+  const followOrUnfollowHandler = async(id) => {
+    try {
+      const {data} = await axios.get(`http://localhost:8080/api/v1/user/follow-unfollow/${id}`,{
+        withCredentials: true
+      })
+      if(data.success){
+        toast.success(data.message)
+      }
+    } catch (error) {
+      toast.error(error.response.data.message)
+    }
+  }
   return (
     <div className="my-10">
       <div className="flex items-center justify-between gap-4 text-sm">
@@ -31,7 +46,7 @@ const SuggestedUsers = () => {
                 </span>
               </div>
             </div>
-            <span className="text-[#3BADF8] text-xs font-bold cursor-pointer hover:text-[#3495D6]">Follow</span>
+            <span onClick={()=>followOrUnfollowHandler(user?._id)} className="text-[#3BADF8] text-xs font-bold cursor-pointer hover:text-[#3495D6]">Follow</span>
           </div>
 
         ))
